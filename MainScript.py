@@ -16,6 +16,8 @@ import asyncio
 import aiohttp
 import os
 import uuid
+import csv
+
 colorama.init()
 GREEN = colorama.Fore.GREEN
 GRAY = colorama.Fore.LIGHTBLACK_EX
@@ -166,6 +168,7 @@ def hard_file_cleanup():
     open('EXTRACTOR/extracted/external_links.txt', 'w').close()
     open('EXTRACTOR/extracted/blog_link_file.txt', 'w').close()
     open('EXTRACTOR/extracted/FINAL_URL_LIST.txt', 'w').close()
+    open('GENERATED/titles_headings.csv', 'w').close()
 
 
 def static_url_path_list():
@@ -249,22 +252,23 @@ class SpinBot:
 
         soup = BeautifulSoup(data, "html.parser")
 
-        article = soup.find('div', class_="entry-content")
         title = soup.title.text  # extracts the title of the page
-
-        return title, article.text
+        article = soup.find('div', class_="entry-content")
+        title_article = [title, article.text]
+        return title_article
 
     @staticmethod
-    def create_append_article_file(extracted, a_uuid):
-        if not os.path.exists(f'./GENERATED/article_{a_uuid}.txt'):
-            with open(f'./GENERATED/article_{a_uuid}.txt', 'a') as final_urls_list_file:
-                print(extracted, file=final_urls_list_file)
+    def create_append_article_file(extracted):
 
-    def post_getter_saver(self,post_url, single_uuid):
+        csv_file = open(f'./GENERATED/titles_headings.csv', 'w', newline='')
+        obj = csv.writer(csv_file)
+        obj.writerow(extracted)
+
+    def post_getter_saver(self, post_url):
         try:
 
             extracted = self.wp_post_getter(post_url)
-            self.create_append_article_file(extracted, single_uuid)
+            self.create_append_article_file(extracted)
 
         except Exception as em:
             print(f'comment Error occurred with url: {post_url} ' + str(em))
@@ -275,6 +279,79 @@ class SpinBot:
 
         finally:
             print("post_getter_saver() done")
+
+    @staticmethod
+    def wp_post_extractor():
+        titles = []
+        posts = []
+        csv_file = open(f'./GENERATED/titles_headings.csv', 'r', newline='')
+        obj = csv.reader(csv_file)
+
+        for single_row in obj:
+            titles.append(single_row[0])
+            posts.append(single_row[1])
+
+        return titles, posts
+
+    def wp_login(self):
+        wp_login_url = 'https://wordpress.com/wp-login.php?checkemail=confirm'
+        wp_email_xpath = '//*[@id="user_login"]'
+        wp_password_xpath = '//*[@id="user_pass"]'
+        wp_login_xpath = '//*[@id="wp-submit"]'
+        wp_email = "johnsong201812@protonmail.com"
+        wp_password = 'ap7fktQ43BZD&ZjqjwT^ak7GAD'
+
+        try:
+            self.driver.delete_all_cookies()
+            self.driver.get(wp_login_url)
+            gls.sleep_time()
+            self.driver.find_element_by_xpath(wp_email_xpath).send_keys(wp_email)
+            gls.sleep_time()
+            self.driver.find_element_by_xpath(wp_password_xpath).send_keys(wp_password)
+            gls.sleep_time()
+            continue_btn = self.driver.find_element_by_xpath(wp_login_xpath)
+            gls.sleep_time()
+            continue_btn.click()
+
+        except Exception as ex:
+            print("wp login error at ", ex)
+            print(traceback.format_exc())
+
+    def wp_post(self, title, post):
+        wp_post_url = 'https://hobbie370330789.wordpress.com/wp-admin/post-new.php'
+        wp_title_xpath = '//*[@id="post-title-0"]'
+        wp_post_xpath = '//*[@aria-label="Empty block; start writing or type forward slash to choose a block"]'
+        wp_publish_1_xpath = '//button[text()="Publish"]'
+        prepub_checkbox_xpath = '//*[@id="inspector-checkbox-control-2"]'
+        close_panel_xpath = '//*[@aria-label="Close panel"]'
+        try:
+            self.driver.get(wp_post_url)
+            gls.sleep_time()
+            time.sleep(20)
+
+            self.driver.find_element_by_xpath(wp_title_xpath).send_keys(title)
+            gls.sleep_time()
+            self.driver.find_element_by_xpath('//*[@id="editor"]/div/div/div[1]/div/div[2]/div[1]/div[4]/div[2]/div/div/div[2]/div[2]/div/div[2]/div').click()
+            gls.sleep_time()
+            self.driver.find_element_by_xpath(wp_post_xpath).send_keys(post)
+            gls.sleep_time()
+            pub1_btn = self.driver.find_element_by_xpath(wp_publish_1_xpath)
+            gls.sleep_time()
+            pub1_btn.click()
+            gls.sleep_time()
+            prepub_checkbox = self.driver.find_element_by_xpath(prepub_checkbox_xpath)
+            if prepub_checkbox.is_selected():
+                prepub_checkbox.click()
+            gls.sleep_time()
+            close_btn = self.driver.find_element_by_xpath(close_panel_xpath)
+            gls.sleep_time()
+            close_btn.click()
+            gls.sleep_time()
+            pub1_btn.click()
+
+        except Exception as ex:
+            print("wp post error at ", ex)
+            print(traceback.format_exc())
 
 
 if __name__ == "__main__":
@@ -362,8 +439,6 @@ if __name__ == "__main__":
 
         create_append_text_file(extracted_links, uuid.uuid4().hex)
 
-        hard_file_cleanup()
-
         for single_static_path in static_url_path_list():
             with open(single_static_path, "r") as internal_link_file:
                 parsed_links = [line.strip() for line in internal_link_file]
@@ -374,7 +449,23 @@ if __name__ == "__main__":
 
             if len(parsed_links_set) > 0:
                 for link in list(parsed_links_set):
-                    bot.wp_post_getter(link)
+                    bot.post_getter_saver(link)
 
+        try:
+            titles_posts = bot.wp_post_extractor()
 
-# todo post articles to some blogging service
+            my_titles = titles_posts[0]
+            my_posts = titles_posts[1]
+
+            loop_nums = len(my_posts)
+
+            for i in range(loop_nums):
+                if i % 10 == 0:
+                    bot.wp_login()
+
+                bot.wp_post(my_titles[i], my_posts[i])
+        except Exception as e:
+            print("posting error at ", e)
+            print(traceback.format_exc())
+
+        hard_file_cleanup()

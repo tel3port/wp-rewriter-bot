@@ -5,6 +5,7 @@ import traceback
 import os
 import uuid
 import globals as gls
+import csv
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--start-maximized")
@@ -113,6 +114,17 @@ def wp_post(title, post):
 # post_getter_saver('https://morealtitude.wordpress.com/2009/09/09/snowkiting-as-dumb-as-it-sounds/', uuid.uuid4().hex)
 
 
-wp_login()
-time.sleep(12)
-wp_post("this is title", "this is post")
+def wp_post_extractor():
+    csv_file = open(f'./GENERATED/titles_headings.csv', 'r', newline='')
+    obj = csv.reader(csv_file)
+
+    for single_row in obj:
+        print(single_row[0])
+        print(single_row[1])
+        print('--------------------')
+
+    title = ''
+    post = ''
+    return title, post
+
+wp_post_extractor()
