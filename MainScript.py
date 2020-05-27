@@ -35,7 +35,8 @@ parsed_links = []
 internal_urls = set()
 external_urls = set()
 
-wp_bot_name = "wp-spinner-bot"
+wp_bot_name = "wp-rewriterbot-1"
+
 
 def is_valid(url):
     """
@@ -205,9 +206,9 @@ class SpinBot:
             "proxyType": "MANUAL",
 
         }
-        self.driver = webdriver.Chrome(executable_path='./chromedriver', options=chrome_options)
-        # chrome_options.add_argument("--headless")
-        # self.driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
+        # self.driver = webdriver.Chrome(executable_path='./chromedriver', options=chrome_options)
+        chrome_options.add_argument("--headless")
+        self.driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
         print("my ip address", my_proxy_address)
 
     def blog_extractor(self):
@@ -368,24 +369,26 @@ class SpinBot:
             close_btn.click()
             gls.sleep_time()
             pub1_btn.click()
+            time.sleep(15)
 
         except Exception as ex:
             print("wp post error at ", ex)
             print(traceback.format_exc())
 
-            # try:
-            #     WebDriverWait(self.driver, 3).until(EC.alert_is_present(), 'Timed out waiting for PA creation ' +'confirmation popup to appear.')
-            #     alert = self.driver.switch_to.alert()
-            #     alert.accept()
-            #     print("alert accepted")
-            # except TimeoutException:
-            #     print("no alert")
+        try:
+            WebDriverWait(self.driver, 3).until(EC.alert_is_present(), 'Timed out waiting for PA creation ' +'confirmation popup to appear.')
+            alert = self.driver.switch_to.alert()
+            alert.accept()
+            print("alert accepted")
+        except TimeoutException:
+            print("no alert")
 
     def clear_stuff(self):
         self.driver.delete_all_cookies()
 
     def handle_alert(self):
         self.driver.switch_to.alert.accept()
+
 
 if __name__ == "__main__":
 
@@ -501,7 +504,6 @@ if __name__ == "__main__":
 
                 bot.wp_post(my_titles[i], my_posts[i])
                 print(f"single posting number {i} DONE")
-                # bot.clear_stuff()
 
         except Exception as e:
             print("posting error at ", e)
