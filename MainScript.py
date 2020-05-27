@@ -403,77 +403,77 @@ if __name__ == "__main__":
 
         bot = SpinBot(wp_bot_name, random_proxy)
 
-        # for _ in range(10):
-        #     bot.blog_extractor()
+        for _ in range(10):
+            bot.blog_extractor()
 
         # ===============LOOPS THRU EACH BLOG AND EXTRACTS ALL INTERNAL AND EXTERNAL URLS========================
 
-        # try:
-        #     with open(f"EXTRACTOR/extracted/blog_link_file.txt", "r") as blog_list_file:
-        #         main_blog_list = [line.strip() for line in blog_list_file]
-        #         blog_list_set = set(main_blog_list)
-        #
-        #     for single_blog in blog_list_set:
-        #         # initialize the set of links (unique links)
-        #         internal_urls = set()
-        #         external_urls = set()
-        #         internal_urls.clear()
-        #         external_urls.clear()
-        #
-        #         print(f"WORKING ON: {single_blog}")
-        #         try:
-        #             crawl(single_blog, max_urls=35)
-        #         except Exception as e:
-        #             print(e)
-        #         print("[+] Total Internal links:", len(internal_urls))
-        #         print("[+] Total External links:", len(external_urls))
-        #         print("[+] Total URLs:", len(external_urls) + len(internal_urls))
-        #
-        #         # todo find out why do i need this urlparse
-        #         # domain_name = urlparse(single_blog).netloc
-        #
-        #         # save the internal links to a file ====> {domain_name}_internal_links.txt"
-        #         with open(f"EXTRACTOR/extracted/internal_links.txt", "a") as f:
-        #             for internal_link in internal_urls:
-        #                 if not ('/tag/' in internal_link or "/categor" in internal_link
-        #                         or "faq" in internal_link or "events" in internal_link
-        #                         or "policy" in internal_link or "terms" in internal_link
-        #                         or "photos" in internal_link or "author" in internal_link
-        #                         or "label" in internal_link or "video" in internal_link
-        #                         or "search" in internal_link or "png" in internal_link
-        #                         or "pdf" in internal_link or "jpg" in internal_link
-        #                         or "facebook" in internal_link or "twitter" in internal_link
-        #                         or "nytimes" in internal_link or "wsj" in internal_link
-        #                         or "reddit" in internal_link or "bbc" in internal_link
-        #                         or "wikipedia" in internal_link or "guardian" in internal_link
-        #                         or "flickr" in internal_link or "cnn" in internal_link
-        #                         or "ttps://wordpre" in internal_link or "google" in internal_link
-        #                         or "cookies" in internal_link or "instagram" in internal_link
-        #                         or "youtube" in internal_link or "spotify" in internal_link
-        #                         or "mail" in internal_link or "pinterest" in internal_link
-        #                         or "tumblr" in internal_link or "label" in internal_link
-        #                         or "dribble" in internal_link or "unsplash" in internal_link
-        #                         or "automattic" in internal_link or "facebook" in internal_link
-        #                         or "amazon" in internal_link or "amzn" in internal_link
-        #                         or "doc" in internal_link or "amzn" in internal_link
-        #                         or int_checker(internal_link)) or "jsp" in internal_link:
-        #                     print(internal_link.strip(), file=f)
-        #                 else:
-        #                     pass
-        #         #
-        #         loop = asyncio.get_event_loop()
-        #         loop.run_until_complete(main())
-        #
-        #         soft_file_cleanup()
-        #
-        # except Exception as e:
-        #     print(e)
-        #
-        # with open("EXTRACTOR/extracted/FINAL_URL_LIST.txt") as extracted_links_file:
-        #     global extracted_links
-        #     extracted_links = [line.strip() for line in extracted_links_file]
-        #
-        # create_append_text_file(extracted_links, uuid.uuid4().hex)
+        try:
+            with open(f"EXTRACTOR/extracted/blog_link_file.txt", "r") as blog_list_file:
+                main_blog_list = [line.strip() for line in blog_list_file]
+                blog_list_set = set(main_blog_list)
+
+            for single_blog in blog_list_set:
+                # initialize the set of links (unique links)
+                internal_urls = set()
+                external_urls = set()
+                internal_urls.clear()
+                external_urls.clear()
+
+                print(f"WORKING ON: {single_blog}")
+                try:
+                    crawl(single_blog, max_urls=35)
+                except Exception as e:
+                    print(e)
+                print("[+] Total Internal links:", len(internal_urls))
+                print("[+] Total External links:", len(external_urls))
+                print("[+] Total URLs:", len(external_urls) + len(internal_urls))
+
+                # todo find out why do i need this urlparse
+                # domain_name = urlparse(single_blog).netloc
+
+                # save the internal links to a file ====> {domain_name}_internal_links.txt"
+                with open(f"EXTRACTOR/extracted/internal_links.txt", "a") as f:
+                    for internal_link in internal_urls:
+                        if not ('/tag/' in internal_link or "/categor" in internal_link
+                                or "faq" in internal_link or "events" in internal_link
+                                or "policy" in internal_link or "terms" in internal_link
+                                or "photos" in internal_link or "author" in internal_link
+                                or "label" in internal_link or "video" in internal_link
+                                or "search" in internal_link or "png" in internal_link
+                                or "pdf" in internal_link or "jpg" in internal_link
+                                or "facebook" in internal_link or "twitter" in internal_link
+                                or "nytimes" in internal_link or "wsj" in internal_link
+                                or "reddit" in internal_link or "bbc" in internal_link
+                                or "wikipedia" in internal_link or "guardian" in internal_link
+                                or "flickr" in internal_link or "cnn" in internal_link
+                                or "ttps://wordpre" in internal_link or "google" in internal_link
+                                or "cookies" in internal_link or "instagram" in internal_link
+                                or "youtube" in internal_link or "spotify" in internal_link
+                                or "mail" in internal_link or "pinterest" in internal_link
+                                or "tumblr" in internal_link or "label" in internal_link
+                                or "dribble" in internal_link or "unsplash" in internal_link
+                                or "automattic" in internal_link or "facebook" in internal_link
+                                or "amazon" in internal_link or "amzn" in internal_link
+                                or "doc" in internal_link or "amzn" in internal_link
+                                or int_checker(internal_link)) or "jsp" in internal_link:
+                            print(internal_link.strip(), file=f)
+                        else:
+                            pass
+                #
+                loop = asyncio.get_event_loop()
+                loop.run_until_complete(main())
+
+                soft_file_cleanup()
+
+        except Exception as e:
+            print(e)
+
+        with open("EXTRACTOR/extracted/FINAL_URL_LIST.txt") as extracted_links_file:
+            global extracted_links
+            extracted_links = [line.strip() for line in extracted_links_file]
+
+        create_append_text_file(extracted_links, uuid.uuid4().hex)
 
         for single_static_path in static_url_path_list():
             with open(f"EXTRACTOR/urls/{single_static_path}", "r") as internal_link_file:
