@@ -89,7 +89,7 @@ def wp_post(title, post):
 
         driver.find_element_by_xpath(wp_title_xpath).send_keys(title)
         gls.sleep_time()
-        driver.find_element_by_xpath('//*[@id="editor"]/div/div/div[1]/div/div[2]/div[1]/div[4]/div[2]/div/div/div[2]/div[2]/div/div[2]/div').click()
+        driver.find_element_by_class_name('block-editor-writing-flow__click-redirect').click()
         gls.sleep_time()
         driver.find_element_by_xpath(wp_post_xpath).send_keys(post)
         gls.sleep_time()
@@ -127,4 +127,7 @@ def wp_post_extractor():
     post = ''
     return title, post
 
-wp_post_extractor()
+
+wp_login()
+time.sleep(10)
+wp_post("test title", "test post")
