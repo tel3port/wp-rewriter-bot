@@ -510,6 +510,6 @@ if __name__ == "__main__":
             print(traceback.format_exc())
 
         hard_file_cleanup()
-        break
+
 
 print("TESTING DONE!")
