@@ -236,7 +236,7 @@ class SpinBot:
         app.restart()
 
     def clean_up(self):
-        t = randint(50, 100)
+        t = randint(5000, 10000)
         print(f"clean up sleep for {t} seconds")
         time.sleep(t)
 
