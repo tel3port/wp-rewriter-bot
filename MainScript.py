@@ -236,7 +236,7 @@ class SpinBot:
         app.restart()
 
     def clean_up(self):
-        t = randint(5000, 10000)
+        t = randint(50, 100)
         print(f"clean up sleep for {t} seconds")
         time.sleep(t)
 
@@ -262,7 +262,7 @@ class SpinBot:
 
         full_article = ""
         count = 0
-        advert = f'\n We are making a random film about this. Book for free HERE! https://my7.travel.blog/awesome/\n'
+        advert = f'\n We are making a random film about this. Book for free HERE! https://surprise-me-playlists.herokuapp.com/\n'
         for single_paragraph in content.find_all_next('p'):
             if len(full_article.split(" ")) <= 500:
 
