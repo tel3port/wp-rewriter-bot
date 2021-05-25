@@ -318,8 +318,8 @@ class SpinBot:
         wp_email_xpath = '//*[@id="user_login"]'
         wp_password_xpath = '//*[@id="user_pass"]'
         wp_login_xpath = '//*[@id="wp-submit"]'
-        wp_email = "johnsong201812@protonmail.com"
-        wp_password = 'ap7fktQ43BZD&ZjqjwT^ak7GAD'
+        wp_email = "johnsogdfgdfng201812@protonmail.com"
+        wp_password = 'ap7fktsgfsgdQ43BZD&ZjqjwT^ak7GAD'
 
         try:
             self.driver.delete_all_cookies()
